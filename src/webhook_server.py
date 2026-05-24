@@ -156,10 +156,14 @@ def _parse_duration(value: Any) -> int:
         seconds = int(float(value or 0))
     except (TypeError, ValueError):
         return 0
-    # Android automations sometimes send durationMillis/duration_ms.
-    if seconds > 86_400:
-        return seconds // 1000
     return seconds
+
+
+def _parse_duration_millis(value: Any) -> int:
+    try:
+        return max(0, int(float(value or 0)) // 1000)
+    except (TypeError, ValueError):
+        return 0
 
 
 def _normalize_phoneish(value: Any) -> str:
@@ -491,7 +495,7 @@ def normalize_call_payload(data: dict[str, Any]) -> dict[str, Any]:
         default=None,
     )
     if duration_ms not in (None, ""):
-        duration_sec = _parse_duration(duration_ms) // 1000
+        duration_sec = _parse_duration_millis(duration_ms)
     else:
         duration = _first(
             flat,

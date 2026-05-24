@@ -621,7 +621,6 @@ async def cmd_log_call(caller: str, duration: int, landing: str, phone: str) -> 
         risk_flag=cls.risk_flag,
         mfo_landing=landing,
         phone=phone or settings.manual_phone,
-        redirect_traces=traces,
     )
     await ai.close()
     storage.close()
